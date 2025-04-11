@@ -24,7 +24,5 @@ RDBMSのindexの振る舞いを確認・学習できるコード群
   - mysql
     - 初回はデータの初期化のためやや時間がかかります。
   - node
-    - npm initまで実行される
-2. `docker exec -it index-study.node bash`
-  - プログラムの実行用にcontainerのシェルを起動
-3. `npm start`
+2. [初回] `docker compose exec node npm install`
+3. `docker compose exec node npm start`
