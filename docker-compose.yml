@@ -23,6 +23,8 @@ services:
       - .:/app
       - ./data/node_modules:/app/node_modules
     working_dir: /app
+    ports:
+      - "12025:12025"
     environment:
       - MYSQL_HOST=mysql
       - MYSQL_USER=root
