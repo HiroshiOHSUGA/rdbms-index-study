@@ -39,13 +39,17 @@ async function insertUserData() {
       ]);
     }
     
-    const query = `
-      INSERT INTO user 
-      (name, email, indexed_col, not_indexed_col, indexed_col_a, indexed_col_b, flag)
-      VALUES ?
-    `;
+    // Execute individual inserts for each user
+    for (const user of users) {
+      const query = `
+        INSERT INTO user 
+        (name, email, indexed_col, not_indexed_col, indexed_col_a, indexed_col_b, flag)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+      `;
+      
+      await executeQuery(query, user);
+    }
     
-    await executeQuery(query, [users]);
     console.log(`${users.length}件のユーザーデータを挿入しました`);
   } catch (error) {
     console.error('ユーザーデータ挿入中にエラーが発生しました:', error);
@@ -67,10 +71,15 @@ async function insertBigData() {
     const batchSize = 1000;
     for (let i = 0; i < bigDataBatch.length; i += batchSize) {
       const batch = bigDataBatch.slice(i, i + batchSize);
-      await executeQuery(
-        'INSERT INTO big_data (value) VALUES ?',
-        [batch]
-      );
+      
+      // 個別にデータを挿入
+      for (const item of batch) {
+        await executeQuery(
+          'INSERT INTO big_data (value) VALUES (?)',
+          item
+        );
+      }
+      
       console.log(`big_dataに${i + batch.length}/${bigDataBatch.length}件のデータを挿入しました`);
     }
     
@@ -91,10 +100,13 @@ async function insertSmallData() {
       smallDataItems.push([`value_${i}`]);
     }
     
-    await executeQuery(
-      'INSERT INTO small_data (value) VALUES ?',
-      [smallDataItems]
-    );
+    // 個別にデータを挿入
+    for (const item of smallDataItems) {
+      await executeQuery(
+        'INSERT INTO small_data (value) VALUES (?)',
+        item
+      );
+    }
     
     console.log(`${smallDataItems.length}件のsmall_dataデータを挿入しました`);
   } catch (error) {
@@ -127,10 +139,13 @@ async function insertOrderData() {
       }
     }
     
-    await executeQuery(
-      'INSERT INTO orders (user_id, amount, status) VALUES ?',
-      [orders]
-    );
+    // 個別に注文データを挿入
+    for (const order of orders) {
+      await executeQuery(
+        'INSERT INTO orders (user_id, amount, status) VALUES (?, ?, ?)',
+        order
+      );
+    }
     
     console.log(`${orders.length}件の注文データを挿入しました`);
   } catch (error) {
