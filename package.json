@@ -6,7 +6,8 @@
   "scripts": {
     "start": "ts-node src/index.ts",
     "build": "tsc",
-    "test": "jest"
+    "test": "jest",
+    "init-data": "ts-node src/init-data.ts"
   },
   "keywords": [],
   "author": "",
