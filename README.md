@@ -25,12 +25,13 @@ RDBMSのindexの振る舞いを確認・学習できるコード群
 
 ## 使用方法
 
-1. `docker compose -f docker-compose.yml up -d`
+1. `docker compose up -d`
   - mysqlとnode環境の起動
   - mysql
     - 初回はデータの初期化のためやや時間がかかります。
   - node
 2. [初回] `docker compose exec node npm install`
-3. `docker compose exec node npm run dev`
+3. [初回] `docker compose exec node npm run init-data`
+4. `docker compose exec node npm run dev`
   - 学習用GUIの起動（ http://localhost:12025 ）
   - @see GUI.md
