@@ -47,6 +47,10 @@ export const executeWithExplain = async (
   };
 };
 
+export const closePool = async () => {
+  await pool.end();
+};
+
 export const getAvailableQueries = async () => {
   return [
     {
