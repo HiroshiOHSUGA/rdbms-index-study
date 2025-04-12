@@ -8,7 +8,10 @@
     "build": "next build",
     "test": "jest",
     "init-data": "tsx src/init-data.ts",
-    "dev": "next dev -p 12025"
+    "dev": "next dev -p 12025",
+    "dev:local": "next dev -p 12025",
+    "init-data:local": "tsx src/init-data.ts",
+    "setup": "npm install && npm run init-data:local"
   },
   "keywords": [],
   "author": "",

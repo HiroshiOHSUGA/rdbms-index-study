@@ -16,21 +16,3 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-
-  node:
-    image: node:22-alpine
-    volumes:
-      - .:/app
-      - ./data/node_modules:/app/node_modules
-    working_dir: /app
-    ports:
-      - "12025:12025"
-    environment:
-      - MYSQL_HOST=mysql
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=root
-      - MYSQL_DATABASE=index_study
-    depends_on:
-      mysql:
-        condition: service_healthy
-    command: tail -f /dev/null 

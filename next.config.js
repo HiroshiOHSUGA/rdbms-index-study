@@ -1,10 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  // Next.js 14以降のApp Routerを使用
-  experimental: {
-    appDir: true,
-  },
+  output: 'standalone',
+  // ネットワークからのアクセスを許可する設定
+  async rewrites() {
+    return [];
+  }
 }
 
 module.exports = nextConfig 

@@ -3,11 +3,13 @@ import { executeWithExplain, getAvailableQueries } from '@/lib/db';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    // paramsを使用する前にawaitする必要はありませんが、
-    // idをconst宣言する前に存在確認を行うべきです
+    // Next.js 15.3.0では動的ルートのパラメータはawaitが必要
+    const params = await context.params;
+    
+    // paramsの存在確認
     if (!params || !params.id) {
       return NextResponse.json(
         { error: 'IDが指定されていません' },
