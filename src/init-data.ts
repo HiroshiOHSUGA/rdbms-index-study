@@ -72,4 +72,128 @@ async function insertUserData() {
     // 基本ユーザーデータ
     for (let i = 1; i <= totalUsers; i++) {
       users.push([
-        `
+        `ユーザー${i}`,
+        `user${i}@example.com`,
+        `indexed_value_${i}`,
+        `not_indexed_value_${i}`,
+        `a_value_${i}`,
+        `b_value_${i}`,
+        i % 2 === 0 // 50%のユーザーでフラグをtrueに
+      ]);
+    }
+    
+    console.log(`ユーザーデータの作成が完了しました。インサート処理を開始します...`);
+    
+    // Execute individual inserts for each user
+    for (let i = 0; i < users.length; i++) {
+      const query = `
+        INSERT INTO user 
+        (name, email, indexed_col, not_indexed_col, indexed_col_a, indexed_col_b, flag)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+      `;
+      
+      await executeQuery(query, users[i]);
+      
+      // 10000件ごとに進捗を表示
+      if ((i + 1) % DATA_COUNTS.PROGRESS_INTERVAL === 0 || i === users.length - 1) {
+        showProgress(i + 1, users.length, startTime, 'ユーザーデータ挿入');
+      }
+    }
+    
+    console.log(`${users.length}件のユーザーデータを挿入しました`);
+  } catch (error) {
+    console.error('ユーザーデータ挿入中にエラーが発生しました:', error);
+    throw error;
+  }
+}
+
+async function insertBigData() {
+  try {
+    // 大量データ用の配列
+    const bigDataBatch = [];
+    const totalItems = DATA_COUNTS.BIG_DATA;
+    const startTime = new Date();
+    
+    console.log(`big_dataの作成を開始します（${totalItems}件）...`);
+    
+    // 大量データを作成
+    for (let i = 1; i <= totalItems; i++) {
+      bigDataBatch.push([`value_${i}`]);
+    }
+    
+    console.log(`big_dataの作成が完了しました。インサート処理を開始します...`);
+    
+    // バッチ処理で挿入（メモリ消費を抑えるため）
+    const batchSize = DATA_COUNTS.BATCH_SIZE;
+    for (let i = 0; i < bigDataBatch.length; i += batchSize) {
+      const batch = bigDataBatch.slice(i, i + batchSize);
+      
+      // 個別にデータを挿入
+      for (const item of batch) {
+        await executeQuery(
+          'INSERT INTO big_data (value) VALUES (?)',
+          item
+        );
+      }
+      
+      const completed = Math.min(i + batch.length, bigDataBatch.length);
+      showProgress(completed, bigDataBatch.length, startTime, 'big_data挿入');
+    }
+    
+    console.log('big_dataへのデータ挿入が完了しました');
+  } catch (error) {
+    console.error('big_dataデータ挿入中にエラーが発生しました:', error);
+    throw error;
+  }
+}
+
+async function insertSmallData() {
+  try {
+    // 少量データ用の配列
+    const smallDataItems = [];
+    
+    // 少量データを作成
+    for (let i = 1; i <= DATA_COUNTS.SMALL_DATA; i++) {
+      smallDataItems.push([`value_${i}`]);
+    }
+    
+    // 個別にデータを挿入
+    for (const item of smallDataItems) {
+      await executeQuery(
+        'INSERT INTO small_data (value) VALUES (?)',
+        item
+      );
+    }
+    
+    console.log(`${smallDataItems.length}件のsmall_dataデータを挿入しました`);
+  } catch (error) {
+    console.error('small_dataデータ挿入中にエラーが発生しました:', error);
+    throw error;
+  }
+}
+
+async function initData() {
+  const totalStartTime = new Date();
+  try {
+    console.log(`データ初期化を開始します... [開始時刻: ${formatDateTime(totalStartTime)}]`);
+    
+    // 既存データを全てクリア
+    await clearAllTables();
+    
+    // 各テーブルにデータを挿入
+    await insertUserData();
+    await insertBigData();
+    await insertSmallData();
+    
+    const totalEndTime = new Date();
+    const totalElapsedSeconds = (totalEndTime.getTime() - totalStartTime.getTime()) / 1000;
+    console.log(`データ初期化が完了しました！ [完了時刻: ${formatDateTime(totalEndTime)}] [合計処理時間: ${formatTime(totalElapsedSeconds)}]`);
+  } catch (error) {
+    console.error('データ初期化中にエラーが発生しました:', error);
+  } finally {
+    await closePool();
+  }
+}
+
+// 実行
+initData(); 
