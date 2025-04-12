@@ -2,27 +2,22 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-
-interface Query {
-  id: string;
-  name: string;
-  query: string;
-}
+import type { Section } from '../types';
 
 export default function Home() {
-  const [queries, setQueries] = useState<Query[]>([]);
+  const [sections, setSections] = useState<Section[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchQueries() {
+    async function fetchSections() {
       try {
-        const response = await fetch('/api/queries');
+        const response = await fetch('/api/sections');
         if (!response.ok) {
-          throw new Error('クエリの取得に失敗しました');
+          throw new Error('セクションの取得に失敗しました');
         }
         const data = await response.json();
-        setQueries(data);
+        setSections(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : '未知のエラーが発生しました');
       } finally {
@@ -30,7 +25,7 @@ export default function Home() {
       }
     }
 
-    fetchQueries();
+    fetchSections();
   }, []);
 
   if (loading) {
@@ -42,19 +37,17 @@ export default function Home() {
   }
 
   return (
-    <div>
-      <h2>学習用クエリの一覧</h2>
-      <div className="grid">
-        {queries.map((query) => (
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-6">SQLインデックス学習</h1>
+      <div className="grid gap-4">
+        {sections.map((section, index) => (
           <Link
-            href={`/${query.id}`}
-            key={query.id}
-            className="card"
+            href={`/${index + 1}/cases`}
+            key={index}
+            className="block p-4 border rounded-lg hover:bg-gray-50 transition"
           >
-            <h3>{query.name}</h3>
-            <pre>
-              {query.query}
-            </pre>
+            <h2 className="text-xl font-semibold">{section.title}</h2>
+            <p className="text-gray-500 mt-2">ケース数: {section.cases.length}</p>
           </Link>
         ))}
       </div>
