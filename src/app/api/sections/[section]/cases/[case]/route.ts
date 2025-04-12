@@ -5,8 +5,9 @@ export async function GET(
   request: Request,
   { params }: { params: { section: string, case: string } }
 ) {
-  const sectionIndex = parseInt(params.section) - 1;
-  const caseIndex = parseInt(params.case) - 1;
+  const { section, case: caseId } = await params;
+  const sectionIndex = parseInt(section) - 1;
+  const caseIndex = parseInt(caseId) - 1;
   
   // セクションの範囲チェック
   if (isNaN(sectionIndex) || sectionIndex < 0 || sectionIndex >= sections.length) {
@@ -14,12 +15,12 @@ export async function GET(
   }
 
   // ケースの範囲チェック
-  const section = sections[sectionIndex];
-  if (isNaN(caseIndex) || caseIndex < 0 || caseIndex >= section.cases.length) {
+  const sectionData = sections[sectionIndex];
+  if (isNaN(caseIndex) || caseIndex < 0 || caseIndex >= sectionData.cases.length) {
     return NextResponse.json({ error: 'ケースが見つかりません' }, { status: 404 });
   }
 
-  const caseItem = section.cases[caseIndex];
+  const caseItem = sectionData.cases[caseIndex];
   
   // クエリ実行結果を生成
   const queriesWithResults = caseItem.queries.map(query => ({
