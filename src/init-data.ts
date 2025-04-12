@@ -1,5 +1,44 @@
 import { executeQuery, closePool } from './db/connection';
 
+// データ量の設定
+const DATA_COUNTS = {
+  USER: 100000, // ユーザーデータ件数
+  BIG_DATA: 100000, // 大量データの件数
+  SMALL_DATA: 10, // 少量データの件数
+  BATCH_SIZE: 1000, // バッチ処理サイズ
+  PROGRESS_INTERVAL: 10000, // 進捗表示間隔
+};
+
+// 進捗表示のためのユーティリティ関数
+function formatTime(seconds: number): string {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const secs = Math.floor(seconds % 60);
+  
+  return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+}
+
+function formatDateTime(date: Date): string {
+  return `${date.getFullYear()}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
+}
+
+// 進捗状況を表示する関数
+function showProgress(completed: number, total: number, startTime: Date, taskName: string): void {
+  const progress = completed / total;
+  const progressPercent = (progress * 100).toFixed(2);
+  
+  const elapsedSeconds = (Date.now() - startTime.getTime()) / 1000;
+  const estimatedTotalSeconds = elapsedSeconds / progress;
+  const remainingSeconds = estimatedTotalSeconds - elapsedSeconds;
+  
+  const estimatedCompletionTime = new Date(startTime.getTime() + estimatedTotalSeconds * 1000);
+  
+  console.log(`[${taskName}] 進捗: ${completed}/${total} (${progressPercent}%)`);
+  console.log(`[${taskName}] 経過時間: ${formatTime(elapsedSeconds)}`);
+  console.log(`[${taskName}] 残り見込み時間: ${formatTime(remainingSeconds)}`);
+  console.log(`[${taskName}] 終了見込み時刻: ${formatDateTime(estimatedCompletionTime)}`);
+}
+
 async function clearAllTables() {
   try {
     // 外部キー制約を一時的に無効化
@@ -25,9 +64,13 @@ async function clearAllTables() {
 async function insertUserData() {
   try {
     const users = [];
+    const totalUsers = DATA_COUNTS.USER;
+    const startTime = new Date();
+    
+    console.log(`ユーザーデータの作成を開始します（${totalUsers}件）...`);
     
     // 基本ユーザーデータ
-    for (let i = 1; i <= 10; i++) {
+    for (let i = 1; i <= totalUsers; i++) {
       users.push([
         `ユーザー${i}`,
         `user${i}@example.com`,
@@ -39,15 +82,22 @@ async function insertUserData() {
       ]);
     }
     
+    console.log(`ユーザーデータの作成が完了しました。インサート処理を開始します...`);
+    
     // Execute individual inserts for each user
-    for (const user of users) {
+    for (let i = 0; i < users.length; i++) {
       const query = `
         INSERT INTO user 
         (name, email, indexed_col, not_indexed_col, indexed_col_a, indexed_col_b, flag)
         VALUES (?, ?, ?, ?, ?, ?, ?)
       `;
       
-      await executeQuery(query, user);
+      await executeQuery(query, users[i]);
+      
+      // 10000件ごとに進捗を表示
+      if ((i + 1) % DATA_COUNTS.PROGRESS_INTERVAL === 0 || i === users.length - 1) {
+        showProgress(i + 1, users.length, startTime, 'ユーザーデータ挿入');
+      }
     }
     
     console.log(`${users.length}件のユーザーデータを挿入しました`);
@@ -61,14 +111,20 @@ async function insertBigData() {
   try {
     // 大量データ用の配列
     const bigDataBatch = [];
+    const totalItems = DATA_COUNTS.BIG_DATA;
+    const startTime = new Date();
     
-    // 10000件のデータを作成
-    for (let i = 1; i <= 10000; i++) {
+    console.log(`big_dataの作成を開始します（${totalItems}件）...`);
+    
+    // 大量データを作成
+    for (let i = 1; i <= totalItems; i++) {
       bigDataBatch.push([`value_${i}`]);
     }
     
+    console.log(`big_dataの作成が完了しました。インサート処理を開始します...`);
+    
     // バッチ処理で挿入（メモリ消費を抑えるため）
-    const batchSize = 1000;
+    const batchSize = DATA_COUNTS.BATCH_SIZE;
     for (let i = 0; i < bigDataBatch.length; i += batchSize) {
       const batch = bigDataBatch.slice(i, i + batchSize);
       
@@ -80,7 +136,8 @@ async function insertBigData() {
         );
       }
       
-      console.log(`big_dataに${i + batch.length}/${bigDataBatch.length}件のデータを挿入しました`);
+      const completed = Math.min(i + batch.length, bigDataBatch.length);
+      showProgress(completed, bigDataBatch.length, startTime, 'big_data挿入');
     }
     
     console.log('big_dataへのデータ挿入が完了しました');
@@ -95,8 +152,8 @@ async function insertSmallData() {
     // 少量データ用の配列
     const smallDataItems = [];
     
-    // わずか10件のデータを作成
-    for (let i = 1; i <= 10; i++) {
+    // 少量データを作成
+    for (let i = 1; i <= DATA_COUNTS.SMALL_DATA; i++) {
       smallDataItems.push([`value_${i}`]);
     }
     
@@ -123,6 +180,9 @@ async function insertOrderData() {
       throw new Error('ユーザーデータが存在しません');
     }
     
+    const startTime = new Date();
+    console.log(`注文データの作成を開始します...`);
+    
     // 注文データ用の配列
     const orders = [];
     const statuses = ['pending', 'processing', 'completed', 'canceled'];
@@ -139,12 +199,19 @@ async function insertOrderData() {
       }
     }
     
+    console.log(`${orders.length}件の注文データを作成しました。インサート処理を開始します...`);
+    
     // 個別に注文データを挿入
-    for (const order of orders) {
+    for (let i = 0; i < orders.length; i++) {
       await executeQuery(
         'INSERT INTO orders (user_id, amount, status) VALUES (?, ?, ?)',
-        order
+        orders[i]
       );
+      
+      // 10000件ごとに進捗を表示
+      if ((i + 1) % DATA_COUNTS.PROGRESS_INTERVAL === 0 || i === orders.length - 1) {
+        showProgress(i + 1, orders.length, startTime, '注文データ挿入');
+      }
     }
     
     console.log(`${orders.length}件の注文データを挿入しました`);
@@ -155,8 +222,9 @@ async function insertOrderData() {
 }
 
 async function initData() {
+  const totalStartTime = new Date();
   try {
-    console.log('データ初期化を開始します...');
+    console.log(`データ初期化を開始します... [開始時刻: ${formatDateTime(totalStartTime)}]`);
     
     // 既存データを全てクリア
     await clearAllTables();
@@ -167,7 +235,9 @@ async function initData() {
     await insertSmallData();
     await insertOrderData();
     
-    console.log('データ初期化が完了しました！');
+    const totalEndTime = new Date();
+    const totalElapsedSeconds = (totalEndTime.getTime() - totalStartTime.getTime()) / 1000;
+    console.log(`データ初期化が完了しました！ [完了時刻: ${formatDateTime(totalEndTime)}] [合計処理時間: ${formatTime(totalElapsedSeconds)}]`);
   } catch (error) {
     console.error('データ初期化中にエラーが発生しました:', error);
   } finally {
