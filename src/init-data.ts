@@ -172,55 +172,6 @@ async function insertSmallData() {
   }
 }
 
-async function insertOrderData() {
-  try {
-    // ユーザーIDを取得
-    const users = await executeQuery('SELECT id FROM user');
-    if (!Array.isArray(users) || users.length === 0) {
-      throw new Error('ユーザーデータが存在しません');
-    }
-    
-    const startTime = new Date();
-    console.log(`注文データの作成を開始します...`);
-    
-    // 注文データ用の配列
-    const orders = [];
-    const statuses = ['pending', 'processing', 'completed', 'canceled'];
-    
-    // 各ユーザーに対して複数の注文を作成
-    for (const user of users as any[]) {
-      const ordersCount = Math.floor(Math.random() * 5) + 1; // 1〜5件の注文
-      
-      for (let i = 0; i < ordersCount; i++) {
-        const status = statuses[Math.floor(Math.random() * statuses.length)];
-        const amount = Math.floor(Math.random() * 10000) + 1000;
-        
-        orders.push([user.id, amount, status]);
-      }
-    }
-    
-    console.log(`${orders.length}件の注文データを作成しました。インサート処理を開始します...`);
-    
-    // 個別に注文データを挿入
-    for (let i = 0; i < orders.length; i++) {
-      await executeQuery(
-        'INSERT INTO orders (user_id, amount, status) VALUES (?, ?, ?)',
-        orders[i]
-      );
-      
-      // 10000件ごとに進捗を表示
-      if ((i + 1) % DATA_COUNTS.PROGRESS_INTERVAL === 0 || i === orders.length - 1) {
-        showProgress(i + 1, orders.length, startTime, '注文データ挿入');
-      }
-    }
-    
-    console.log(`${orders.length}件の注文データを挿入しました`);
-  } catch (error) {
-    console.error('注文データ挿入中にエラーが発生しました:', error);
-    throw error;
-  }
-}
-
 async function initData() {
   const totalStartTime = new Date();
   try {
@@ -233,7 +184,6 @@ async function initData() {
     await insertUserData();
     await insertBigData();
     await insertSmallData();
-    await insertOrderData();
     
     const totalEndTime = new Date();
     const totalElapsedSeconds = (totalEndTime.getTime() - totalStartTime.getTime()) / 1000;
