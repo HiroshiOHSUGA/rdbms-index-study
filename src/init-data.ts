@@ -71,13 +71,19 @@ async function insertUserData() {
     
     // 基本ユーザーデータ
     for (let i = 1; i <= totalUsers; i++) {
+      // 乱数を生成
+      const indexedValue = Math.floor(Math.random() * 1000000);
+      const notIndexedValue = Math.floor(Math.random() * 1000000);
+      const aValue = Math.floor(Math.random() * 10000);
+      const bValue = Math.floor(Math.random() * 10000);
+      
       users.push([
         `ユーザー${i}`,
         `user${i}@example.com`,
-        `indexed_value_${i}`,
-        `not_indexed_value_${i}`,
-        `a_value_${i}`,
-        `b_value_${i}`,
+        indexedValue,
+        notIndexedValue,
+        aValue,
+        bValue,
         i % 2 === 0 // 50%のユーザーでフラグをtrueに
       ]);
     }

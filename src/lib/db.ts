@@ -21,7 +21,6 @@ export const executeQuery = async <T = any>(
   const connection = await pool.getConnection();
   try {
     const [results] = await connection.execute(query, params);
-    console.log("[SQL]", query, params);
     return results as T[];
   } finally {
     connection.release();
