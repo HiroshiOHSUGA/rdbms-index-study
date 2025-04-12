@@ -39,17 +39,19 @@ export default function Home() {
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-6">SQLインデックス学習</h1>
-      <div className="grid gap-4">
-        {sections.map((section, index) => (
-          <Link
-            href={`/${index + 1}/cases`}
-            key={index}
-            className="block p-4 border rounded-lg hover:bg-gray-50 transition"
-          >
-            <h2 className="text-xl font-semibold">{section.title}</h2>
-            <p className="text-gray-500 mt-2">ケース数: {section.cases.length}</p>
-          </Link>
-        ))}
+      <div className="space-y-4">
+        <ul className="space-y-4">
+          {sections.map((section, index) => (
+            <li key={index}>
+              <Link
+                href={`/${index + 1}/cases`}
+                className="block p-4 border rounded-lg hover:bg-gray-50 transition w-full"
+              >
+                {section.title} ({section.cases.length})
+              </Link>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
