@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { sections, generateMockResults } from '../../../../../../data/sections';
+import { sections } from '../../../../../../data/sections';
+import { executeWithExplain } from '../../../../../../lib/db';
 
 export async function GET(
   request: Request,
@@ -22,11 +23,26 @@ export async function GET(
 
   const caseItem = sectionData.cases[caseIndex];
   
-  // クエリ実行結果を生成
-  const queriesWithResults = caseItem.queries.map(query => ({
-    ...query,
-    ...generateMockResults(query.query)
-  }));
+  // 並列実行せず、一件ずつSQLクエリを順番に実行
+  const queriesWithResults = [];
+  for (const query of caseItem.queries) {
+    // クエリのパラメータがある場合の処理（?の部分を適切な値に置き換える）
+    // パラメータの値は実際のユースケースによって異なるため、ここではサンプル値を使用
+    const queryParams: any[] = [];
+    const processedQuery = query.query.replace(/\?/g, () => {
+      // サンプルパラメータ - 実際のアプリケーションでは適切なパラメータを指定する
+      queryParams.push(1); // ここでは単純に1を使用
+      return '?';
+    });
+    
+    // SQLクエリを実行して結果を取得
+    const results = await executeWithExplain(processedQuery, queryParams);
+    
+    queriesWithResults.push({
+      ...query,
+      ...results
+    });
+  }
 
   // ケースとその結果を返す
   return NextResponse.json({
