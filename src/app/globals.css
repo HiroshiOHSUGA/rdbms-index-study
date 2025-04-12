@@ -180,3 +180,8 @@ pre {
 .table-container {
   overflow-x: auto;
 } 
+
+.h-box {
+  display: flex;
+  gap: 10px;
+}

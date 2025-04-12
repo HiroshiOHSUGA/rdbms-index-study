@@ -47,17 +47,17 @@ function QueryResult({ queryData, index }: { queryData: any, index: number }) {
   return (
     <div className="mb-8 p-4 border rounded-lg">
       <h3 className="text-lg font-semibold mb-2">{queryData.note}</h3>
-      <div className="mb-4">
+      <div className="mb-4 h-box">
         <h4 className="font-medium mb-1">SQL:</h4>
         <pre className="bg-gray-100 p-3 rounded whitespace-pre-wrap">{queryData.query}</pre>
-        <p className="mt-2 text-sm text-gray-600">実行時間: {queryData.executionTime}ms</p>
       </div>
-      
+      <p className="mt-2 text-sm text-gray-600">実行時間: {queryData.executionTime}ms</p>
+
       <div className="mb-4">
-        <h4 className="font-medium mb-1">実行計画:</h4>
+        <h4 className="font-medium mb-1">EXPLAIN:</h4>
         <DataTable data={queryData.explain} />
       </div>
-      
+
       <div>
         <h4 className="font-medium mb-1">結果:</h4>
         <DataTable data={queryData.results} />
@@ -82,12 +82,12 @@ function CompareView({ queries }: { queries: any[] }) {
             <pre className="bg-gray-100 p-3 rounded whitespace-pre-wrap">{query.query}</pre>
             <p className="mt-2 text-sm text-gray-600">実行時間: {query.executionTime}ms</p>
           </div>
-          
+
           <div className="mb-4">
             <h4 className="font-medium mb-1">実行計画:</h4>
             <DataTable data={query.explain} />
           </div>
-          
+
           <div>
             <h4 className="font-medium mb-1">結果:</h4>
             <DataTable data={query.results} />
@@ -104,7 +104,7 @@ export default function CaseDetailPage() {
   const router = useRouter();
   const section = params.section as string;
   const caseId = params.case as string;
-  
+
   const [caseData, setCaseData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -145,10 +145,9 @@ export default function CaseDetailPage() {
       <div className="mb-4">
         <Link href={`/${section}/cases`} className="text-blue-500 hover:underline">← ケース一覧に戻る</Link>
       </div>
-      
+
       <h1 className="text-2xl font-bold mb-2">{caseData.title}</h1>
-      <p className="mb-6 text-gray-500">タイプ: {caseData.type === 'single' ? '単一クエリ' : '比較クエリ'}</p>
-      
+
       {caseData.type === 'single' ? (
         caseData.queries.map((query: any, index: number) => (
           <QueryResult key={index} queryData={query} index={index} />
