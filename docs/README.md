@@ -21,10 +21,9 @@ RDBMSのindexの振る舞いを確認・学習できるコード群
 ## 使用方法
 
 1. [初回] `npm i`
-2. [初回] `npm run generate-init-sql`
-3. `docker compose up -d`
+2. `docker compose up -d`
   - 初回は立ち上がりが遅い
-4. 好きにSQLを試す
+3. 好きにSQLを試す
 
 ### SQLを試す方法
 mysql container内のmysqlコマンドに以下のショートカットでアクセスできる
