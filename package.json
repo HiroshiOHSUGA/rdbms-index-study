@@ -4,15 +4,8 @@
   "description": "RDBMSのインデックスの動作を学習・確認するためのプロジェクト",
   "main": "src/index.ts",
   "scripts": {
-    "start": "tsx src/index.ts",
-    "build": "next build",
-    "test": "jest",
-    "init-data": "tsx src/init-data.ts",
     "generate-init-sql": "tsx src/generate-init-sql.ts",
-    "dev": "next dev -p 12025",
-    "dev:local": "next dev -p 12025",
-    "init-data:local": "tsx src/init-data.ts",
-    "setup": "npm install && npm run init-data:local"
+    "dev": "next dev -p 12025"
   },
   "keywords": [],
   "author": "",
