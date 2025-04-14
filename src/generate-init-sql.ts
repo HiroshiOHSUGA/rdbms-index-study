@@ -3,8 +3,8 @@ import * as path from 'path';
 
 // データ量の設定（実際の運用に合わせて小さくする）
 const DATA_COUNTS = {
-  USER: 1000,       // 本番: 100000
-  USER_SMALL: 10,   // 少量データ
+  USER: 1000000,
+  USER_SMALL: 10000,
 };
 
 // SQLファイルのパス
