@@ -5,7 +5,8 @@
   "main": "src/index.ts",
   "scripts": {
     "generate-init-sql": "tsx src/generate-init-sql.ts",
-    "dev": "next dev -p 12025"
+    "dev": "next dev -p 12025",
+    "mysql": "docker compose exec mysql mysql -uroot -proot index_study"
   },
   "keywords": [],
   "author": "",

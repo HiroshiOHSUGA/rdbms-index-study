@@ -3,8 +3,8 @@ import * as path from 'path';
 
 // データ量の設定（実際の運用に合わせて小さくする）
 const DATA_COUNTS = {
-  USER: 1000000,
-  USER_SMALL: 10000,
+  USER: 10000000,
+  USER_SMALL: 100,
 };
 
 // SQLファイルのパス
@@ -55,7 +55,7 @@ function generateUserSql() {
       const bValue = Math.floor(Math.random() * 10000);
       const flag = i % 2 === 0; // 50%のユーザーでフラグをtrueに
       
-      values.push(`('ユーザー${i}', 'user${i}@example.com', ${indexedValue}, ${notIndexedValue}, ${aValue}, ${bValue}, ${flag})`);
+      values.push(`('User${i}', 'user${i}@example.com', ${indexedValue}, ${notIndexedValue}, ${aValue}, ${bValue}, ${flag})`);
     }
     
     sql += values.join(',\n') + ';\n\n';
@@ -78,7 +78,7 @@ function generateUserSmallSql() {
     const bValue = Math.floor(Math.random() * 10000);
     const flag = i % 2 === 0; // 50%のユーザーでフラグをtrueに
     
-    values.push(`('ユーザー${i}', 'user${i}@example.com', ${indexedValue}, ${notIndexedValue}, ${aValue}, ${bValue}, ${flag})`);
+    values.push(`('User${i}', 'user${i}@example.com', ${indexedValue}, ${notIndexedValue}, ${aValue}, ${bValue}, ${flag})`);
   }
   
   sql += values.join(',\n') + ';\n\n';
