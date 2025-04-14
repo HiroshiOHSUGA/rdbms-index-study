@@ -1,0 +1,7 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+When you have to execute SQL query you can `npm run mysql -- -e "{SQL};".
+When you need a time of SQL execution use `npm run mysql-time -- -e "{SQL};"

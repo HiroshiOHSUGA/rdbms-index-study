@@ -1,0 +1,9 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+You read following files at first of every session.
+- [README.md](mdc:docs/README.md) 
+- [LEARNING.md](mdc:docs/LEARNING.md) 
+- [package.json](mdc:package.json)
