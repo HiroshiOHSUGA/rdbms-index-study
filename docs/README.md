@@ -37,13 +37,10 @@ mysql container内のmysqlコマンドに以下のショートカットでアク
 
 ## データ初期化について
 
-- データは以下のいずれかの方法で初期化できます：
-  1. Docker起動時の自動初期化：
-     - `src/db/init/01_create_tables.sql`：テーブル作成
-     - `src/db/init/02_insert_data.sql`：データ挿入
-  2. 手動データ初期化（大量データの場合）：
-     - `npm run init-data`：プログラムによるデータ挿入（高速）
+テーブルの定義や、データの生成ロジックを変更した場合、初期化作業が必要です。
 
-- 初期化SQLを再生成する場合：
-  - `npm run generate-init-sql`
-  - コンテナを再起動すると再度データが初期化されます
+以下を含むので注意してください。
+- docker containerの停止
+- データの削除
+
+`npm run reset-db`

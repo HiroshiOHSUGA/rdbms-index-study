@@ -4,6 +4,7 @@
   "description": "RDBMSのインデックスの動作を学習・確認するためのプロジェクト",
   "main": "src/index.ts",
   "scripts": {
+    "postinstall": "npm run generate-init-sql",
     "generate-init-sql": "tsx src/generate-init-sql.ts",
     "mysql": "docker compose exec mysql mysql -uroot -proot index_study",
     "mysql-time": "time docker compose exec mysql mysql -uroot -proot index_study",
