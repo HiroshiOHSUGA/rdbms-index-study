@@ -1,3 +1,4 @@
 /data
 /node_modules
 /.next
+/src/db/init/02_insert_data.sql
