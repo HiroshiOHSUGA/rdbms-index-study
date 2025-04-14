@@ -8,28 +8,32 @@ RDBMSのindexの振る舞いを確認・学習できるコード群
 
 ## File and Directory
 - data
+  - 自動生成
   - db
     - dockerで起動したmysqlのDB保存先
 - src
-  - 学習用コード群
-  - lib
-    - ユーティリティ関数
-  - db
-    - init
-      - MySQLコンテナ起動時に実行される初期化SQLファイル
-- docker-compose.yml
-  - mysql
+  - db/init/*.sql
+    - MySQLコンテナ初回起動時に実行されるSQLファイル
+    - 一部自動生成
+  - generate-init-sql.ts
+    - MySQLのデータ初期化用SQLを生成するts
 
 ## 使用方法
 
-1. `docker compose up -d`
-  - mysqlとnode環境の起動
-  - mysql
-    - 初回はデータの初期化のためやや時間がかかります。
-    - コンテナ起動時に自動的にデータが初期化されます。
-2. `npm i`
-3. `npm run mysql`
-  - MySQLへの接続（インデックス動作の検証に使用）
+1. [初回] `npm i`
+2. [初回] `npm run generate-init-sql`
+3. `docker compose up -d`
+  - 初回は立ち上がりが遅い
+4. 好きにSQLを試す
+
+### SQLを試す方法
+mysql container内のmysqlコマンドに以下のショートカットでアクセスできる
+`npm run mysql`
+
+実行例
+1. `npm run mysql`
+2. `npm run mysql -- -e "SELECT * FROM user WHER id = 1;"`
+2. `npm run mysql-time -- -e "SELECT * FROM user WHER id = 1;"`
 
 ## データ初期化について
 
