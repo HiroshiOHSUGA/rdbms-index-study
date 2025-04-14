@@ -1,6 +1,13 @@
 import { NextResponse } from 'next/server';
 import { sections } from '../../../../../../data/sections';
 import { executeWithExplain } from '../../../../../../lib/db';
+import { Query } from '../../../../../../types';
+
+// executeWithExplainの戻り値の型を定義
+type ExecutionResult = Awaited<ReturnType<typeof executeWithExplain>>;
+
+// queriesWithResultsの型を定義
+type QueryWithResult = Query & ExecutionResult;
 
 export async function GET(
   request: Request,
@@ -24,7 +31,7 @@ export async function GET(
   const caseItem = sectionData.cases[caseIndex];
   
   // 並列実行せず、一件ずつSQLクエリを順番に実行
-  const queriesWithResults = [];
+  const queriesWithResults: QueryWithResult[] = [];
   for (const query of caseItem.queries) {
     // クエリのパラメータがある場合の処理（?の部分を適切な値に置き換える）
     // パラメータの値は実際のユースケースによって異なるため、ここではサンプル値を使用
@@ -36,11 +43,12 @@ export async function GET(
     });
     
     // SQLクエリを実行して結果を取得
-    const results = await executeWithExplain(processedQuery, queryParams);
+    const executionResult = await executeWithExplain(processedQuery, queryParams);
     
     queriesWithResults.push({
       ...query,
-      ...results
+      ...executionResult,
+      results: executionResult.results.slice(0, 10)
     });
   }
 
