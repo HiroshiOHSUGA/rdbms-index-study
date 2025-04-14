@@ -12,10 +12,6 @@ RDBMSのindexの振る舞いを確認・学習できるコード群
     - dockerで起動したmysqlのDB保存先
 - src
   - 学習用コード群
-  - app
-    - Next.jsのページコンポーネント
-  - components
-    - 共通UIコンポーネント
   - lib
     - ユーティリティ関数
   - db
@@ -32,8 +28,8 @@ RDBMSのindexの振る舞いを確認・学習できるコード群
     - 初回はデータの初期化のためやや時間がかかります。
     - コンテナ起動時に自動的にデータが初期化されます。
 2. `npm i`
-3. `npm run dev`
-  - 学習用GUIの起動（ http://localhost:12025 ）
+3. `npm run mysql`
+  - MySQLへの接続（インデックス動作の検証に使用）
 
 ## データ初期化について
 

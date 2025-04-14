@@ -5,26 +5,16 @@
   "main": "src/index.ts",
   "scripts": {
     "generate-init-sql": "tsx src/generate-init-sql.ts",
-    "dev": "next dev -p 12025",
-    "mysql": "docker compose exec mysql mysql -uroot -proot index_study"
+    "mysql": "docker compose exec mysql mysql -uroot -proot index_study",
+    "init-data": "tsx src/generate-init-sql.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "dotenv": "^16.0.3",
-    "mysql2": "^3.6.0",
-    "next": "^15.3.0",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0"
   },
   "devDependencies": {
-    "@types/jest": "^29.5.0",
     "@types/node": "^18.15.11",
-    "@types/react": "^19.1.1",
-    "@types/react-dom": "^19.1.2",
-    "jest": "^29.5.0",
-    "ts-jest": "^29.1.0",
     "tsx": "^4.19.3",
     "typescript": "^5.0.3"
   }

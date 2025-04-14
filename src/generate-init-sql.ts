@@ -3,7 +3,7 @@ import * as path from 'path';
 
 // データ量の設定（実際の運用に合わせて小さくする）
 const DATA_COUNTS = {
-  USER: 10000000,
+  USER: 10000,
   USER_SMALL: 100,
 };
 
