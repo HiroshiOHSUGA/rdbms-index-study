@@ -6,6 +6,7 @@
   "scripts": {
     "generate-init-sql": "tsx src/generate-init-sql.ts",
     "mysql": "docker compose exec mysql mysql -uroot -proot index_study",
+    "mysql-time": "time docker compose exec mysql mysql -uroot -proot index_study",
     "log": "docker compose logs mysql",
     "reset-db": "docker compose down && rm -rf ./data/db && npm run generate-init-sql && docker compose up -d"
   },
